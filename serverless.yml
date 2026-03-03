@@ -1,0 +1,85 @@
+service: btg-pactual-funds-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x # Latest stable Node version on AWS Lambda
+  region: us-east-1
+  stage: dev
+  memorySize: 256
+  environment:
+    DYNAMODB_TABLE_USERS: ${self:service}-users-${self:provider.stage}
+    DYNAMODB_TABLE_TRANSACTIONS: ${self:service}-transactions-${self:provider.stage}
+    SES_SENDER_EMAIL: test@btgpactual.com # Should be a verified identity in SES
+    NODE_ENV: ${self:provider.stage}
+  
+  # IAM Permissions for AWS Resources
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_USERS}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_TRANSACTIONS}"
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+        - sns:Publish
+      Resource: "*"
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+
+resources:
+  Resources:
+    # UsersTable Definition
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_USERS}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST # Serverless/On-demand
+
+    # TransactionsTable Definition
+    TransactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_TRANSACTIONS}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+plugins:
+  - serverless-offline

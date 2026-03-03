@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "4b6c8a52-9f3b-4f9e-a8d2-4e6f9b8c0a1d",
+		"name": "BTG Pactual - Funds Platform",
+		"description": "API requests for managing investment funds.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Funds",
+			"request": {
+				"method": "GET",
+				"header": [
+					{ "key": "x-user-id", "value": "user-123" }
+				],
+				"url": { "raw": "{{baseUrl}}/funds", "host": ["{{baseUrl}}"], "path": ["funds"] }
+			}
+		},
+		{
+			"name": "Get My Balance",
+			"request": {
+				"method": "GET",
+				"header": [
+					{ "key": "x-user-id", "value": "user-123" }
+				],
+				"url": { "raw": "{{baseUrl}}/balance", "host": ["{{baseUrl}}"], "path": ["balance"] }
+			}
+		},
+		{
+			"name": "Subscribe to Fund",
+			"request": {
+				"method": "POST",
+				"header": [
+					{ "key": "x-user-id", "value": "user-123" }
+				],
+				"url": { "raw": "{{baseUrl}}/funds/1/subscribe", "host": ["{{baseUrl}}"], "path": ["funds", "1", "subscribe"] }
+			}
+		},
+		{
+			"name": "Cancel Fund",
+			"request": {
+				"method": "POST",
+				"header": [
+					{ "key": "x-user-id", "value": "user-123" }
+				],
+				"url": { "raw": "{{baseUrl}}/funds/1/cancel", "host": ["{{baseUrl}}"], "path": ["funds", "1", "cancel"] }
+			}
+		},
+		{
+			"name": "View Transaction History",
+			"request": {
+				"method": "GET",
+				"header": [
+					{ "key": "x-user-id", "value": "user-123" }
+				],
+				"url": { "raw": "{{baseUrl}}/transactions", "host": ["{{baseUrl}}"], "path": ["transactions"] }
+			}
+		}
+	],
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:3000", "type": "string" }
+	]
+}
