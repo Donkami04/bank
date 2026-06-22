@@ -37,6 +37,9 @@ class FundsService {
         return user;
     }
 
+    
+    
+
     /**
      * Subscribe to a fund
      */
