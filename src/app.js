@@ -7,7 +7,7 @@ const { success } = require('./utils/responses');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-
+// TEST
 // Security and Logging Middlewares
 app.use(helmet());
 app.use(cors());
